@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:bands_name/pages/home.dart';
+
 void main() {
   runApp(const MainApp());
 }
@@ -9,12 +11,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Bands Name App',
+      initialRoute: 'home',
+      routes: {'home': (_) => HomePage()},
     );
   }
 }
