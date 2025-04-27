@@ -16,10 +16,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Band> bands = [
-    Band(id: '1', name: 'AC/DC', votes: 7),
-    Band(id: '2', name: 'Queen', votes: 3),
-    Band(id: '3', name: 'Krokus', votes: 1),
-    Band(id: '4', name: 'Judas Priest', votes: 6),
+    // Band(id: '1', name: 'AC/DC', votes: 7),
+    // Band(id: '2', name: 'Queen', votes: 3),
+    // Band(id: '3', name: 'Krokus', votes: 1),
+    // Band(id: '4', name: 'Judas Priest', votes: 6),
   ];
 
   @override
@@ -163,12 +163,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void addBandToList(String name) {
-    print(name);
-
+    // Add band to the list
     if (name.length > 1) {
-      // Add band to the list
-      bands.add(Band(id: DateTime.now().toString(), name: name, votes: 0));
-      setState(() {});
+      final socketService = Provider.of<SocketService>(context, listen: false);
+
+      //emitir: add-band
+      socketService.emit('add-band', {'name': name});
     }
     Navigator.pop(context);
   }
