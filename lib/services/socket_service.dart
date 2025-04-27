@@ -27,5 +27,26 @@ class SocketService with ChangeNotifier {
       _serverStatus = ServerStatus.offline;
       notifyListeners();
     });
+    socket.onDisconnect((_) {
+      _serverStatus = ServerStatus.offline;
+      notifyListeners();
+    });
+
+    socket.on('nuevo-mensaje', (payload) {
+      print('nuevo-mensaje:');
+      print('nombre:' + payload['nombre']);
+      print('mensaje:' + payload['mensaje']);
+      print(
+        payload.containsKey('mensaje2')
+            ? payload['mensaje2']
+            : 'no hay mensaje2',
+      );
+    });
+
+    // socket.once('nuevo-mensaje', (payload) {
+    //   print('nuevo-mensaje:');
+    //   print('nombre:' + payload['nombre']);
+    //   print('mensaje:' + payload['mensaje']);
+    // });
   }
 }
