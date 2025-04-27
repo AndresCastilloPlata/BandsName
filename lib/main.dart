@@ -1,3 +1,4 @@
+import 'package:bands_name/pages/status.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bands_name/pages/home.dart';
@@ -15,7 +16,10 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Bands Name App',
       initialRoute: 'home',
-      routes: {'home': (_) => HomePage()},
+      routes: {
+        'home': (_) => const HomePage(),
+        'status': (_) => const StatusPage(),
+      },
     );
   }
 }
