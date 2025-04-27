@@ -23,6 +23,24 @@ class _HomePageState extends State<HomePage> {
   ];
 
   @override
+  void initState() {
+    final socketService = Provider.of<SocketService>(context, listen: false);
+    socketService.socket.on('bandas-actuales', (payload) {
+      bands = (payload as List).map((band) => Band.fromMap(band)).toList();
+      setState(() {});
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    final socketService = Provider.of<SocketService>(context, listen: false);
+    socketService.socket.off('bandas-actuales');
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final socketServiceConnection =
         Provider.of<SocketService>(context).serverStatus;
