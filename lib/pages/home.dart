@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pie_chart/pie_chart.dart';
 import 'package:provider/provider.dart';
 
 import 'package:bands_name/models/band.dart';
@@ -25,8 +26,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     final socketService = Provider.of<SocketService>(context, listen: false);
-    socketService.socket.on('bandas-actuales', _handleActiveBands);
 
+    socketService.socket.on('bandas-actuales', _handleActiveBands);
     super.initState();
   }
 
@@ -66,10 +67,17 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: bands.length,
-        itemBuilder:
-            (BuildContext context, int index) => _bandTile(bands[index]),
+      body: Column(
+        children: [
+          _showGraph(),
+          Expanded(
+            child: ListView.builder(
+              itemCount: bands.length,
+              itemBuilder:
+                  (BuildContext context, int index) => _bandTile(bands[index]),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         elevation: 1,
@@ -165,5 +173,72 @@ class _HomePageState extends State<HomePage> {
       socketService.emit('add-band', {'name': name});
     }
     Navigator.pop(context);
+  }
+
+  //mostrar grafica
+
+  Widget _showGraph() {
+    // Map<String, double> dataMap = {
+    //   "Flutter": 5,
+    //   "React": 3,
+    //   "Xamarin": 2,
+    //   "Ionic": 2,
+    // };
+
+    if (bands.isEmpty) {
+      return const Center(child: Text('No data available'));
+    }
+    Map<String, double> dataMap = {};
+    for (var band in bands) {
+      dataMap.putIfAbsent(band.name, () => band.votes.toDouble());
+    }
+
+    final List<Color> colorList = [
+      Colors.blue,
+      Colors.red,
+      Colors.green,
+      Colors.yellow,
+      Colors.purple,
+      Colors.orange,
+    ];
+
+    return Container(
+      padding: const EdgeInsets.only(top: 20, bottom: 10),
+      width: double.infinity,
+      height: 270,
+      child: PieChart(
+        dataMap: dataMap,
+        animationDuration: Duration(milliseconds: 800),
+        // chartLegendSpacing: 32,
+        // chartRadius: MediaQuery.of(context).size.width / 3.2,
+        colorList: colorList,
+        initialAngleInDegree: 0,
+        chartType: ChartType.ring,
+        ringStrokeWidth: 25,
+        // centerText: "HYBRID",
+        legendOptions: LegendOptions(
+          showLegendsInRow: false,
+          legendPosition: LegendPosition.right,
+          showLegends: true,
+          // legendShape: _BoxShape.circle,
+          legendTextStyle: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        chartValuesOptions: ChartValuesOptions(
+          showChartValueBackground: false,
+          showChartValues: true,
+          showChartValuesInPercentage: true,
+          showChartValuesOutside: false,
+          decimalPlaces: 0,
+          chartValueStyle: const TextStyle(
+            fontSize: 18,
+            color: Colors.black87,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
   }
 }
